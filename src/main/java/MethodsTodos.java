@@ -22,11 +22,9 @@ public class MethodsTodos {
 
         List<Todos> posts = GSON.fromJson(response.body(), new TypeToken<List<Todos>>() {
         }.getType());
-        for (int i = 0; i < posts.size(); i++) {
-            Todos a = posts.get(i);
-
+        for (Todos a : posts) {
             if (a.getCompleted().equals("false")) {
-                System.out.println("Open Task = "+a);
+                System.out.println("Open Task = " + a);
             }
         }
         System.out.println(response.statusCode());

@@ -12,6 +12,7 @@ public class Methods {
     private static final HttpClient CLIENT = HttpClient.newHttpClient();
     private static final Gson GSON = new Gson();
 
+
     public static User sendPost(URI uri, User user) throws IOException, InterruptedException {
         final String requestBody = GSON.toJson(user);
         HttpRequest request = HttpRequest.newBuilder()
@@ -20,11 +21,12 @@ public class Methods {
                 .header("Content-type", "application/json")
                 .build();
         final HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+
         return GSON.fromJson(response.body(), User.class);
     }
 
-    public static User getById(URI uri,int id) throws IOException, InterruptedException {
-        uri = URI.create(uri+"/"+id);
+    public static User getById(URI uri, int id) throws IOException, InterruptedException {
+        uri = URI.create(uri + "/" + id);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -34,8 +36,9 @@ public class Methods {
         System.out.println(response.statusCode());
         return user;
     }
-    public static List<User> getUserName(URI uri,String userName) throws IOException, InterruptedException {
-        uri = URI.create(uri+"?username="+userName);
+
+    public static List<User> getUserName(URI uri, String userName) throws IOException, InterruptedException {
+        uri = URI.create(uri + "?username=" + userName);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -46,6 +49,7 @@ public class Methods {
         System.out.println(response.statusCode());
         return users;
     }
+
     public static List<User> getAllUsers(URI uri) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
@@ -57,7 +61,8 @@ public class Methods {
         System.out.println(response.statusCode());
         return users;
     }
-    public static void delete(URI uri,int id) throws IOException, InterruptedException {
+
+    public static void delete(URI uri, int id) throws IOException, InterruptedException {
         final HttpRequest request = HttpRequest.newBuilder()
                 .DELETE()
                 .uri(URI.create(uri + "/" + id))
@@ -67,7 +72,8 @@ public class Methods {
         System.out.println(send);
 
     }
-    public static User getChange(URI uri,User user) throws IOException, InterruptedException {
+
+    public static User getChange(URI uri, User user) throws IOException, InterruptedException {
         user.setName("Novoe Imia");
         final String requestBody = GSON.toJson(user);
         HttpRequest request = HttpRequest.newBuilder()

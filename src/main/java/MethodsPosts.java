@@ -1,6 +1,8 @@
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
@@ -15,7 +17,7 @@ public class MethodsPosts {
     private static int idPost;
 
     public static List<UserPost> getUserPosts(URI uri, int userId) throws IOException, InterruptedException {
-        uri = URI.create(uri+"/users/"+userId+"/posts");
+        uri = URI.create(uri + "/users/" + userId + "/posts");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -24,15 +26,15 @@ public class MethodsPosts {
 
         List<UserPost> posts = GSON.fromJson(response.body(), new TypeToken<List<UserPost>>() {
         }.getType());
-        for (int i = 0; i < posts.size(); i++) {
-            UserPost a = posts.get(i);
-             idPost = a.getId();
+        for (UserPost a : posts) {
+            idPost = a.getId();
         }
         System.out.println(response.statusCode());
         return posts;
     }
+
     public static List<Posts> getPosts(URI uri, int id) throws IOException, InterruptedException {
-        uri = URI.create(uri+"/posts/"+id+"/comments");
+        uri = URI.create(uri + "/posts/" + id + "/comments");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -43,16 +45,19 @@ public class MethodsPosts {
         System.out.println(response.statusCode());
         return posts;
     }
-    public static List<Posts> AllPosts(URI uri,int userId) throws IOException, InterruptedException {
-        List<UserPost> userPosts = getUserPosts(URI.create(uri+""), userId);
-        List<Posts> postsList = getPosts(URI.create(uri+""),idPost);
-        FileWriter file = new FileWriter("src/main/resources/user-"+userId+"-post-"+idPost+"-comments.json");
 
-        String toJson = GSON.toJson(postsList);
-        file.write(toJson);
-        file.flush();
-        file.close();
-
+    public static List<Posts> AllPosts(URI uri, int userId) throws IOException, InterruptedException {
+        getUserPosts(URI.create(uri + ""), userId);
+        List<Posts> postsList = getPosts(URI.create(uri + ""), idPost);
+        String json;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        json = gson.toJson(postsList);
+        System.out.println(json);
+        File file = new File("src/main/resources/user-" + userId + "-post-" + idPost + "-comments.json");
+        FileWriter writer = new FileWriter(file);
+        writer.write(String.valueOf(json));
+        writer.flush();
+        writer.close();
         return postsList;
     }
 }
